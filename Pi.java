@@ -13,10 +13,8 @@ import java.util.concurrent.Future;
 public class Pi {
 
 	public static void main(String[] args) {
-		long numPoints = 0;
 		int numThread = 0;
 		long sideSquare = 0;
-		long pointsOfThread = 0;
 		boolean quit = false;
 
 		long timeOfStart = Calendar.getInstance().getTimeInMillis();
@@ -31,15 +29,15 @@ public class Pi {
 				quit = true;
 			}
 		}
-		ExecutorService executor = Executors.newFixedThreadPool(numThread);
-		CompletionService<Long> pool = new ExecutorCompletionService<Long>(executor);
-		List<Future<Long>> futures = new ArrayList<Future<Long>>(numThread);
 		if (sideSquare <= 0 || numThread <= 0 || args.length < 4 || args.length > 5) {
 			System.out.println("ERROR: Args are not correct!!!");
 			return;
 		} else {
-			numPoints = sideSquare * sideSquare;
-			pointsOfThread = numPoints / numThread;
+			ExecutorService executor = Executors.newFixedThreadPool(numThread);
+			CompletionService<Long> pool = new ExecutorCompletionService<Long>(executor);
+			List<Future<Long>> futures = new ArrayList<Future<Long>>(numThread);
+			long numPoints = sideSquare * sideSquare;
+			long pointsOfThread = numPoints / numThread;
 			for (int t = 0; t < numThread; t++) {
 				if (t == numThread - 1) {
 					pointsOfThread = numPoints - pointsOfThread * (numThread - 1);
@@ -64,7 +62,7 @@ public class Pi {
 			System.out
 					.println("Total execution time for current run (millis): " + (timeOfEnd - timeOfStart) + " millis");
 			System.out.println("Calculate Pi: " + pi);
+			executor.shutdown();
 		}
-		executor.shutdown();
 	}
 }
